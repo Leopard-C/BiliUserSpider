@@ -15,26 +15,26 @@
 int api_connect_to_server(const std::string& server, ClientConfig* clientConfig,
     DatabaseConfig* dbConfig, std::string* errMsg)
 {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ret = http_get(server + "/client/connect", &root, errMsg);
         if (ret != NO_ERROR) {
             break;
         }
 
-		if (checkNull(root, "data")) {
+        if (checkNull(root, "data")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data";
-			break;;
-		}
+            break;;
+        }
 
-		Json::Value& data = root["data"];
-		if (checkNull(data, "client_config", "db_config")) {
+        Json::Value& data = root["data"];
+        if (checkNull(data, "client_config", "db_config")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:client/client_config/db_config";
-			break;
-		}
+            break;
+        }
 
         ClientConfig clientConfig;
         if (!clientConfig.parseFromJson(data["client_config"])) {
@@ -53,17 +53,17 @@ int api_connect_to_server(const std::string& server, ClientConfig* clientConfig,
         g_dbConfig = dbConfig;
 
         ret = NO_ERROR;
-	} while (false);
+    } while (false);
 
-	return ret;
+    return ret;
 }
 
 
 /* 客户端加入 */
 int api_client_join(const std::string& server, const std::string& os, int threads, int* clientId, std::string* errMsg)
 {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ic::Url url(server + "/client/join");
         url.setParam("os", os);
@@ -73,31 +73,31 @@ int api_client_join(const std::string& server, const std::string& os, int thread
             break;
         }
 
-		if (checkNull(root, "data")) {
+        if (checkNull(root, "data")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data";
-			break;;
-		}
+            break;;
+        }
 
-		Json::Value& data = root["data"];
-		if (checkNull(data, "id")) {
+        Json::Value& data = root["data"];
+        if (checkNull(data, "id")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data[id]";
-			break;
-		}
+            break;
+        }
 
-		*clientId = getIntVal(data, "id");
+        *clientId = getIntVal(data, "id");
         ret = NO_ERROR;
-	} while (false);
+    } while (false);
 
-	return ret;
+    return ret;
 }
 
 
 /* 客户端退出 */
 int api_client_quit(const std::string& server, int clientId, std::string* errMsg) {
     Json::Value root;
-	ic::Url url(server + "/client/quit");
+    ic::Url url(server + "/client/quit");
     url.setParam("id", clientId);
     return http_get(url, &root, errMsg);
 }

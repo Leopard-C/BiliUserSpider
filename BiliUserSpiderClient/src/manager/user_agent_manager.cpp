@@ -8,7 +8,7 @@ UserAgentManager::UserAgentManager() {
 }
 
 UserAgentManager::~UserAgentManager() {
-	LogF("Destroy instance of UserAgentServer");
+    LogF("Destroy instance of UserAgentServer");
 }
 
 bool UserAgentManager::readConfig(const std::string& uaFile) {

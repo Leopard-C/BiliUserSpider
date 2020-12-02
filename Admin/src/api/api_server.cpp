@@ -7,7 +7,7 @@
 /* 测试与服务器的连通性 */
 int api_connect_to_server(const std::string& server, bool* status, std::string* errMsg) {
     Json::Value root;
-	int ret = GENERAL_ERROR;
+    int ret = GENERAL_ERROR;
     do {
         ret = http_get(server + "/server/_connect", &root, errMsg);
         if (ret != NO_ERROR) {
@@ -30,7 +30,7 @@ int api_connect_to_server(const std::string& server, bool* status, std::string* 
 /* 服务器状态 */
 int api_server_status(const std::string& server, bool* status, std::string* errMsg) {
     Json::Value root;
-	int ret = GENERAL_ERROR;
+    int ret = GENERAL_ERROR;
     do {
         ret = http_get(server + "/server/_status", &root, errMsg);
         if (ret != NO_ERROR) {
@@ -74,8 +74,8 @@ int api_shutdown_server(const std::string& server, std::string* errMsg) {
 int api_get_clients_info(const std::string& server, std::vector<SpiderClientInfo>* clientsInfo,
     bool* status, std::string* errMsg)
 {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ret = http_get(server + "/server/_get_clients_info", &root, errMsg);
         if (ret != NO_ERROR) {
@@ -107,10 +107,10 @@ int api_get_clients_info(const std::string& server, std::vector<SpiderClientInfo
             }
         }
 
-		ret = NO_ERROR;
-	} while (false);
+        ret = NO_ERROR;
+    } while (false);
 
-	return ret;
+    return ret;
 }
 
 /* 通知客户端退出 */
@@ -124,8 +124,8 @@ int api_quit_client(const std::string& server, int clientId, bool isForce, std::
 
 /* 任务完成进度 */
 int api_get_task_progress(const std::string& server, int* midStart, int* midEnd, int* midCurrent, bool* status, std::string* errMsg) {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ret = http_get(server + "/server/_get_task_progress", &root, errMsg);
         if (ret != NO_ERROR) {
@@ -150,10 +150,10 @@ int api_get_task_progress(const std::string& server, int* midStart, int* midEnd,
         *midEnd = getIntVal(data, "mid_end");
         *midCurrent = getIntVal(data, "mid_current");
 
-		ret = NO_ERROR;
-	} while (false);
+        ret = NO_ERROR;
+    } while (false);
 
-	return ret;
+    return ret;
 }
 
 /* 设置任务范围 */

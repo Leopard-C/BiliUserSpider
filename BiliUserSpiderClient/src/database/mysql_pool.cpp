@@ -21,11 +21,11 @@ MysqlDbPool::MysqlDbPool(const std::string& host, unsigned int port, const std::
 MysqlDbPool::MysqlDbPool(const std::string& configfile) {
     ok_ = readConfig(configfile);
     if (!ok_) {
-		// any one connection failed
-		// return false
+        // any one connection failed
+        // return false
         clear();
     }
-	LInfo("Mysql pool init successfully");
+    LInfo("Mysql pool init successfully");
 }
 
 MysqlDbPool::~MysqlDbPool() {
@@ -34,7 +34,7 @@ MysqlDbPool::~MysqlDbPool() {
 
 
 /*
- *	从JSON配置文件中读取数据库连接信息, 需要具有以下key:
+ *    从JSON配置文件中读取数据库连接信息, 需要具有以下key:
  *    host, port, user, password, db_name, pool_size
  */
 bool MysqlDbPool::readConfig(const std::string& filename) {
@@ -78,7 +78,7 @@ bool MysqlDbPool::readConfig(const std::string& filename) {
 
 int MysqlDbPool::init() {
     int count = 0;
-	for (int i = 0; i < pool_size_; ++i) {
+    for (int i = 0; i < pool_size_; ++i) {
         if (connect() == 0) {
             ++count;
         }
@@ -109,7 +109,7 @@ int MysqlDbPool::connect() {
     mysql_options(mysql, MYSQL_SET_CHARSET_NAME, "utf8");
     MYSQL *status =
         mysql_real_connect(mysql, host_.c_str(), user_.c_str(), password_.c_str(),
-			db_name_.c_str(), port_, NULL, CLIENT_MULTI_STATEMENTS);
+            db_name_.c_str(), port_, NULL, CLIENT_MULTI_STATEMENTS);
     if (NULL == status || mysql == NULL) {
         LError("Mysql Error: {}", mysql_error(mysql));
         ret = 1;
@@ -135,7 +135,7 @@ bool MysqlDbPool::freeConnection(MYSQL *mysql) {
         return false;
     }
     std::lock_guard<std::mutex> guard(mutex_);
-	// avoid push back to pool twice
+    // avoid push back to pool twice
     for (auto it = pool_.begin(); it != pool_.end(); ++it) {
         if (mysql == *it) {
             return false;

@@ -36,7 +36,7 @@ int api_get_random_proxy(MysqlInstance& mysql, ic::ProxyData* proxyData, std::st
         ret = 0;
     } while (false);
 
-	return ret;
+    return ret;
 }
 
 
@@ -44,44 +44,44 @@ int api_get_random_proxy(MysqlInstance& mysql, ic::ProxyData* proxyData, std::st
 /* 然后本地维护一个代理池 */
 /* 每隔一段时间和数据库交换一次数据 */
 int api_get_all_proxies(MysqlInstance& mysql, int maxErrorCount, std::vector<ic::ProxyData>* proxies, std::string* errMsg) {
-	if (mysql.bad()) {
+    if (mysql.bad()) {
         *errMsg = "Mysql instance is bad";
-		LError("Mysql instance is bad");
+        LError("Mysql instance is bad");
         return -1;
-	}
+    }
 
-	char sql[128];
-	sprintf(sql, "SELECT `host`,`port` FROM proxy WHERE `error_count`<=%d;", maxErrorCount);
-	if (!mysql.exec(sql) || mysql.numRows() < 1) {
+    char sql[128];
+    sprintf(sql, "SELECT `host`,`port` FROM proxy WHERE `error_count`<=%d;", maxErrorCount);
+    if (!mysql.exec(sql) || mysql.numRows() < 1) {
         *errMsg = "Execute sql statement failed";
-		return -1;
-	}
+        return -1;
+    }
 
-	while (auto row = mysql.fetchRow()) {
-		ic::ProxyData proxyData;
-		proxyData.host = util::to_string(row[0]);
-		proxyData.port = util::to_int(row[1], 0);
-		proxies->emplace_back(proxyData);
-	}
+    while (auto row = mysql.fetchRow()) {
+        ic::ProxyData proxyData;
+        proxyData.host = util::to_string(row[0]);
+        proxyData.port = util::to_int(row[1], 0);
+        proxies->emplace_back(proxyData);
+    }
 
-	return 0;
+    return 0;
 }
 
 
 /* 提交代理IP失败的次数(累加) */
 int api_error_proxy(MysqlInstance& mysql, const ic::ProxyData& proxyData, int count, std::string* errMsg) {
-	if (count < 1) {
+    if (count < 1) {
         return 0;
-	}
-	if (mysql.bad()) {
+    }
+    if (mysql.bad()) {
         *errMsg = "Mysql instance is bad";
-		LError("Mysql instance is bad");
+        LError("Mysql instance is bad");
         return -1;
-	}
+    }
 
-	char sql[256];
-	sprintf(sql, "UPDATE proxy SET error_count=error_count+%d WHERE `host`='%s' AND `port`=%u;",
-		count, proxyData.host.c_str(), proxyData.port);
+    char sql[256];
+    sprintf(sql, "UPDATE proxy SET error_count=error_count+%d WHERE `host`='%s' AND `port`=%u;",
+        count, proxyData.host.c_str(), proxyData.port);
     if (!mysql.exec(sql)) {
         *errMsg = "Execute sql statement failed";
         return -1;
@@ -93,15 +93,15 @@ int api_error_proxy(MysqlInstance& mysql, const ic::ProxyData& proxyData, int co
 
 /* 从数据库中清除代理IP */
 int api_remove_proxy(MysqlInstance& mysql, const ic::ProxyData& proxyData, std::string* errMsg) {
-	if (mysql.bad()) {
+    if (mysql.bad()) {
         *errMsg = "Mysql instance is bad";
-		LError("Mysql instance is bad");
+        LError("Mysql instance is bad");
         return -1;
-	}
+    }
 
-	char sql[128];
-	sprintf(sql, "DELETE FROM proxy WHERE `host`='%s' AND `port`=%u;",
-		proxyData.host.c_str(), proxyData.port);
+    char sql[128];
+    sprintf(sql, "DELETE FROM proxy WHERE `host`='%s' AND `port`=%u;",
+        proxyData.host.c_str(), proxyData.port);
     if (!mysql.exec(sql)) {
         *errMsg = "Execute sql statement failed";
         return -1;
@@ -112,20 +112,20 @@ int api_remove_proxy(MysqlInstance& mysql, const ic::ProxyData& proxyData, std::
 
 
 int api_get_num_proxies(MysqlInstance& mysql, int* num, std::string* errMsg) {
-	if (mysql.bad()) {
+    if (mysql.bad()) {
         *errMsg = "Mysql instance is bad";
-		LError("Mysql instance is bad");
-		return -1;
-	}
+        LError("Mysql instance is bad");
+        return -1;
+    }
 
-	const char* sql = "SELECT count(1) FROM proxy;";
-	if (!mysql.exec(sql) || mysql.numRows() != 1) {
+    const char* sql = "SELECT count(1) FROM proxy;";
+    if (!mysql.exec(sql) || mysql.numRows() != 1) {
         *errMsg = "Execute sql statement failed";
-		return -1;
-	}
+        return -1;
+    }
 
-	auto row = mysql.fetchRow();
-	*num = util::to_int(row[0], 0);
+    auto row = mysql.fetchRow();
+    *num = util::to_int(row[0], 0);
 
     return 0;
 }

@@ -14,8 +14,8 @@ extern int g_clientId;
 int api_get_task(const std::string& server, int clientId, int count, int commitAll,
     MainTask* mainTask, ClientConfig* clientConfig, std::string* errMsg)
 {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ic::Url url(server + "/task/get");
         url.setParam("count", count);
@@ -26,11 +26,11 @@ int api_get_task(const std::string& server, int clientId, int count, int commitA
             break;
         }
 
-		if (checkNull(root, "data")) {
+        if (checkNull(root, "data")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data";
-			break;;
-		}
+            break;;
+        }
 
         Json::Value& data = root["data"];
         if (checkNull(data, "task", "client_config")) {
@@ -58,10 +58,10 @@ int api_get_task(const std::string& server, int clientId, int count, int commitA
             break;
         }
 
-		ret = NO_ERROR;
-	} while (false);
+        ret = NO_ERROR;
+    } while (false);
 
-	return ret;
+    return ret;
 }
 
 
@@ -81,11 +81,11 @@ int api_commit_task(const std::string& server, int clientId, int taskId, int com
             break;
         }
 
-		if (checkNull(root, "data")) {
+        if (checkNull(root, "data")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data";
-			break;
-		}
+            break;
+        }
 
         Json::Value& data = root["data"];
         if (checkNull(data, "client_config", "should_quit")) {

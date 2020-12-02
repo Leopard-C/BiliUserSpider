@@ -25,7 +25,7 @@ void TaskManager::start(MysqlDbPool* mysqlDbPool) {
  *   返回 sub_task_id
 ***/
 int TaskManager::getSubTask(std::vector<int>& mids) {
-	std::lock_guard<std::mutex> lck(mutex_);
+    std::lock_guard<std::mutex> lck(mutex_);
     mids.reserve(g_clientConfig.sub_task_step);
 
     /* 1. 检查是否有发生过错误的mid, 有的话就先分配这些id */
@@ -88,18 +88,18 @@ int TaskManager::getSubTask(std::vector<int>& mids) {
 
 /* 提交任务 */
 void TaskManager::commitSubTask(int subTaskId,
-	const std::vector<bili::UserInfo>& infos,
-	const std::vector<int>& noneMids,
-	const std::deque<int>& errorMids) 
+    const std::vector<bili::UserInfo>& infos,
+    const std::vector<int>& noneMids,
+    const std::deque<int>& errorMids) 
 {
     LInfo("Commit sub task : {} {} {}", infos.size(), noneMids.size(), errorMids.size());
-	std::lock_guard<std::mutex> lck(mutex_);
+    std::lock_guard<std::mutex> lck(mutex_);
     int okCount = static_cast<int>(infos.size());
     int noneCount = static_cast<int>(noneMids.size());
     int errorCount = static_cast<int>(errorMids.size());
 
     /* 在子任务列表中 查找该任务 */
-	auto subTaskIter = sub_tasks_.find(subTaskId);
+    auto subTaskIter = sub_tasks_.find(subTaskId);
     if (subTaskIter == sub_tasks_.end()) {
         LCritical("Won't get here");
         /* Won't get here */
@@ -120,7 +120,7 @@ void TaskManager::commitSubTask(int subTaskId,
 
     /* 正常的用户信息 */
     /* 先缓存，缓存一定数量后再写入数据库 */
-	if (okCount > 0) {
+    if (okCount > 0) {
         commit_ok += okCount;
         auto findIt = infos_buff_.find(subTask.main_task_id);
         if (findIt == infos_buff_.end()) {
@@ -129,7 +129,7 @@ void TaskManager::commitSubTask(int subTaskId,
         else {
             findIt->second.insert(findIt->second.end(), infos.begin(), infos.end());
         }
-	}
+    }
     /*
      * 写入数据库的条件
      *  1. 缓存满
@@ -166,7 +166,7 @@ void TaskManager::commitSubTask(int subTaskId,
     }
 
     /* 有错误发生 */
-	if (errorCount > 0) {
+    if (errorCount > 0) {
         commit_error += errorCount;
         auto findIt = error_mids_.find(subTask.main_task_id);
         if (findIt == error_mids_.end()) {
@@ -176,8 +176,8 @@ void TaskManager::commitSubTask(int subTaskId,
             findIt->second.insert(findIt->second.end(), errorMids.begin(), errorMids.end());
         }
         /* 不写入数据库, 因为很快就会将该mid分配出去,再次尝试 */
-		//writeErrorToDb(errorMids);
-	}
+        //writeErrorToDb(errorMids);
+    }
 
     /* 从子任务列表中删除该任务 */
     sub_tasks_.erase(subTaskIter);
@@ -245,13 +245,13 @@ int TaskManager::appendInfoToSql_(char* end, const bili::UserInfo* info, MysqlIn
     if (info->face.find("noface.jpg") == std::string::npos) {
         face = info->face;
     }
-	return sprintf(end,
-		"(%u,'%s',%d,'%s','%s',%d,%d,%d,%d,%d,'%s',%d,'%s',%d,'%s',%u,%d),",
-		info->mid, mysql.escapeString(info->name).c_str(), info->sex, face.c_str(),
-		mysql.escapeString(info->sign.substr(0, 300)).c_str(), info->level, info->attention, info->fans,
-		info->vip_status, info->vip_type, info->vip_label.c_str(), info->official_type,
-		mysql.escapeString(info->official_desc).c_str(), info->official_role,
-		mysql.escapeString(info->official_title).c_str(), info->lid, info->is_deleted);
+    return sprintf(end,
+        "(%u,'%s',%d,'%s','%s',%d,%d,%d,%d,%d,'%s',%d,'%s',%d,'%s',%u,%d),",
+        info->mid, mysql.escapeString(info->name).c_str(), info->sex, face.c_str(),
+        mysql.escapeString(info->sign.substr(0, 300)).c_str(), info->level, info->attention, info->fans,
+        info->vip_status, info->vip_type, info->vip_label.c_str(), info->official_type,
+        mysql.escapeString(info->official_desc).c_str(), info->official_role,
+        mysql.escapeString(info->official_title).c_str(), info->lid, info->is_deleted);
 }
 
 
@@ -293,7 +293,7 @@ bool TaskManager::writeOkToDb_() {
     }
 
     /* 执行写入数据库操作 */
-	for (auto it = tablesMap.begin(); it != tablesMap.end(); ++it) {
+    for (auto it = tablesMap.begin(); it != tablesMap.end(); ++it) {
         bool success = false;
         /* 尝试5次，都出错，就返回false */
         for (int i = 0; i < 5 && !g_forceStop; ++i) {
@@ -305,7 +305,7 @@ bool TaskManager::writeOkToDb_() {
         if (!success) {
             return false;
         }
-	}
+    }
 
     /* 检查主任务是否完成,如果完成,就提交到服务器 */
     for (auto it = infos_buff_.begin(); it != infos_buff_.end(); ) {
@@ -357,11 +357,11 @@ bool TaskManager::writeOkToDb_(const std::vector<const bili::UserInfo*>& infos, 
             ++count;
             ++idx;
         }
-		*(end-1) = ';';
-		*end = '\0';
-		if (!mysql.exec(sql, 3)) {
+        *(end-1) = ';';
+        *end = '\0';
+        if (!mysql.exec(sql, 3)) {
             return false;
-		}
+        }
     }
 
     return true;
@@ -369,9 +369,9 @@ bool TaskManager::writeOkToDb_(const std::vector<const bili::UserInfo*>& infos, 
 
 bool TaskManager::writeNoneToDb_() {
     /* 获取一个mysql连接 */
-	MysqlInstance mysql(mysql_db_pool_);
+    MysqlInstance mysql(mysql_db_pool_);
     if (mysql.bad()) {
-		LError("MysqlInstance is bad");
+        LError("MysqlInstance is bad");
         return false;
     }
 
@@ -410,7 +410,7 @@ bool TaskManager::writeNoneToDb_() {
     }
 
     /* 执行写入数据库操作 */
-	for (auto it = tablesMap.begin(); it != tablesMap.end(); ++it) {
+    for (auto it = tablesMap.begin(); it != tablesMap.end(); ++it) {
         bool success = false;
         /* 尝试5次，都出错，就返回false */
         for (int i = 0; i < 5 && !g_forceStop; ++i) {
@@ -422,7 +422,7 @@ bool TaskManager::writeNoneToDb_() {
         if (!success) {
             return false;
         }
-	}
+    }
 
     /* 更新任务完成度 */
     /* 检查主任务是否完成,如果完成,就提交到主服务器 */
@@ -456,7 +456,7 @@ bool TaskManager::writeNoneToDb_() {
 }
 
 bool TaskManager::writeNoneToDb_(const std::vector<int>& noneMids, const std::string& tableName, MysqlInstance& mysql) {
-	char sql[128 * kRecordsPerQuery];
+    char sql[128 * kRecordsPerQuery];
     char* start = sql;
     start += sprintf(sql, "INSERT IGNORE INTO %s (`mid`) VALUE", tableName.c_str());
     size_t size = noneMids.size();
@@ -465,15 +465,15 @@ bool TaskManager::writeNoneToDb_(const std::vector<int>& noneMids, const std::st
         char* end = start;
         int count = 0;
         while (count < kRecordsPerQuery && idx < size) {
-			end += sprintf(end, "(%u),", noneMids[idx]);
+            end += sprintf(end, "(%u),", noneMids[idx]);
             ++count;
             ++idx;
         }
-		*(end-1) = ';';
-		*end = '\0';
-		if (!mysql.exec(sql, 3)) {
+        *(end-1) = ';';
+        *end = '\0';
+        if (!mysql.exec(sql, 3)) {
             return false;
-		}
+        }
     }
 
     return true;

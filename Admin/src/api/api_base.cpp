@@ -4,7 +4,7 @@
 
 
 int http_get(ic::Url url, Json::Value* root, std::string* errMsg) {
-	int ret = GENERAL_ERROR;
+    int ret = GENERAL_ERROR;
     do {
         url.setParam("pwd", g_svrPwd);
         ic::Request request(url.toString());
@@ -44,7 +44,7 @@ int http_get(ic::Url url, Json::Value* root, std::string* errMsg) {
 }
 
 int http_post(ic::Url url, Json::Value& jsonData, Json::Value* root, std::string* errMsg) {
-	int ret = GENERAL_ERROR;
+    int ret = GENERAL_ERROR;
     do {
         jsonData["pwd"] = g_svrPwd;
         ic::Request request(url.toString());

@@ -21,21 +21,21 @@
 
 class TaskManager {
 public:
-	TaskManager();
-	~TaskManager();
+    TaskManager();
+    ~TaskManager();
 
 public:
     /* 启动 */
     void start(MysqlDbPool* mysqlDbPool);
 
     /* 申请任务, 返回任务id,为-1说明申请失败或者没有剩余任务可做 */
-	int getSubTask(std::vector<int>& mids);
+    int getSubTask(std::vector<int>& mids);
 
     /* 提交任务 */
-	void commitSubTask(int subTaskId,
-		const std::vector<bili::UserInfo>& infos,
-		const std::vector<int>& noneMids,
-		const std::deque<int>& errorMids);
+    void commitSubTask(int subTaskId,
+        const std::vector<bili::UserInfo>& infos,
+        const std::vector<int>& noneMids,
+        const std::deque<int>& errorMids);
 
     /* 子任务数量 */
     int numSubTasks() const { return static_cast<int>(sub_tasks_.size()); }
@@ -47,7 +47,7 @@ public:
     void flush();
 
 private:
-	int appendInfoToSql_(char* end, const bili::UserInfo* info, MysqlInstance& mysql);
+    int appendInfoToSql_(char* end, const bili::UserInfo* info, MysqlInstance& mysql);
 
     /* 向主任务服务器申请任务 */
     bool getMainTask_();
@@ -56,26 +56,26 @@ private:
     bool commitMainTask_(int mainTaskId);
 
     /* 写入数据库 */
-	bool writeOkToDb_();
-	bool writeNoneToDb_();
-	bool writeOkToDb_(const std::vector<const bili::UserInfo*>& infos, const std::string& tableName, MysqlInstance& mysql);
-	bool writeNoneToDb_(const std::vector<int>& noneMids, const std::string& tableName, MysqlInstance& mysql);
+    bool writeOkToDb_();
+    bool writeNoneToDb_();
+    bool writeOkToDb_(const std::vector<const bili::UserInfo*>& infos, const std::string& tableName, MysqlInstance& mysql);
+    bool writeNoneToDb_(const std::vector<int>& noneMids, const std::string& tableName, MysqlInstance& mysql);
 
 public:
     /* 统计量 */
-	int commit_ok = 0;
-	int commit_none = 0;
-	int commit_error = 0;
-	int write_to_db_ok = 0;
-	int write_to_db_none = 0;
-	int write_to_db_error = 0;
+    int commit_ok = 0;
+    int commit_none = 0;
+    int commit_error = 0;
+    int write_to_db_ok = 0;
+    int write_to_db_none = 0;
+    int write_to_db_error = 0;
 
 private:
     enum {
         kRecordsPerQuery = 128,  /* 缓存大小，即每次向数据库中插入128条记录 */
         kRecordsPerTable = 2000000,       /* 200万条数据 */
         kRecordsPerTableOfNone = 2000000  /* 200万条数据 */
-	};
+    };
 
 private:
     /* 主任务列表 */
@@ -85,12 +85,12 @@ private:
 
     /* 子任务列表 */
     /* <id, subTask> */
-	std::map<int, SubTask> sub_tasks_;
-	int current_mid_ = 0;
-	int current_sub_task_id_ = 0;
+    std::map<int, SubTask> sub_tasks_;
+    int current_mid_ = 0;
+    int current_sub_task_id_ = 0;
 
 private:
-	std::mutex mutex_;
+    std::mutex mutex_;
 
     /* 获取到的用户信息 缓存 */
     // <mainTaskId, infos>

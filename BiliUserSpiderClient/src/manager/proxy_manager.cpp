@@ -13,7 +13,7 @@ ProxyManager::ProxyManager() {
 }
 
 ProxyManager::~ProxyManager() {
-	LogF("Destruct ProxyManager");
+    LogF("Destruct ProxyManager");
 }
 
 
@@ -31,11 +31,11 @@ bool ProxyManager::getRandomProxy(ic::ProxyData& proxyData) {
             break;
         }
     }
-	std::lock_guard<std::mutex> lck(mutex_);
-	auto it = proxies_.begin();
-	std::advance(it, rand() % proxies_.size());
-	proxyData = it->first;
-	return true;
+    std::lock_guard<std::mutex> lck(mutex_);
+    auto it = proxies_.begin();
+    std::advance(it, rand() % proxies_.size());
+    proxyData = it->first;
+    return true;
 }
 
 
@@ -43,8 +43,8 @@ void ProxyManager::start(MysqlDbPool* mysqlDbPool) {
     LInfo("Start ProxyManager");
     mysql_db_pool_ = mysqlDbPool;
     bg_thread_quit_ = false;
-	std::thread t(backgroundThread, this);
-	t.detach();
+    std::thread t(backgroundThread, this);
+    t.detach();
 }
 
 void ProxyManager::stop() {
@@ -54,25 +54,25 @@ void ProxyManager::stop() {
 
 /* 代理发生错误一次 */
 void ProxyManager::errorProxy(const ic::ProxyData& proxyData) {
-	std::lock_guard<std::mutex> lck(mutex_);
-	auto it = proxies_.find(proxyData);
-	if (it != proxies_.end()) {
-		it->second++;
-	}
-	else {
-		proxies_.emplace(proxyData, 1);
-	}
+    std::lock_guard<std::mutex> lck(mutex_);
+    auto it = proxies_.find(proxyData);
+    if (it != proxies_.end()) {
+        it->second++;
+    }
+    else {
+        proxies_.emplace(proxyData, 1);
+    }
 }
 
 
 /* 清除代理 */
 void ProxyManager::removeProxy(const ic::ProxyData& proxyData) {
-	std::lock_guard<std::mutex> lck(mutex_);
-	auto it = proxies_.find(proxyData);
-	if (it != proxies_.end()) {
+    std::lock_guard<std::mutex> lck(mutex_);
+    auto it = proxies_.find(proxyData);
+    if (it != proxies_.end()) {
         //LError("Not found proxy in proxies_");
-		proxies_.erase(it);
-	}
+        proxies_.erase(it);
+    }
     MysqlInstance mysql(mysql_db_pool_);
     if (mysql.bad()) {
         LError("Mysql instance is bad");
@@ -155,12 +155,12 @@ bool ProxyManager::getNumProxiesFromDb(int* num) {
 
 /* 后台线程 */
 void ProxyManager::backgroundThread(ProxyManager* proxySvr) {
-	auto& proxies = proxySvr->proxies_;
+    auto& proxies = proxySvr->proxies_;
 
-	while (!g_forceStop) {
-		{
-			/* 本地缓存 -> 数据库 */
-			std::lock_guard<std::mutex> lck(proxySvr->mutex_);
+    while (!g_forceStop) {
+        {
+            /* 本地缓存 -> 数据库 */
+            std::lock_guard<std::mutex> lck(proxySvr->mutex_);
             if (g_forceStop) {
                 break;
             }
@@ -169,10 +169,10 @@ void ProxyManager::backgroundThread(ProxyManager* proxySvr) {
                 break;
             }
 
-			/* 清空本地缓存 */
-			proxies.clear();
+            /* 清空本地缓存 */
+            proxies.clear();
 
-			/* 数据库 -> 本地缓存 */
+            /* 数据库 -> 本地缓存 */
             std::vector<ic::ProxyData> proxiesVec;
             for (int i = 0; i < 10 && !g_forceStop; ++i) {
                 /* 获取失败，等待2s */
@@ -199,21 +199,21 @@ void ProxyManager::backgroundThread(ProxyManager* proxySvr) {
 
             LInfo("ProxyPool Size: {}", proxiesVec.size());
 
-			for (auto& proxyData : proxiesVec) {
-				proxies.emplace(proxyData, 0);
-			}
-		}
+            for (auto& proxyData : proxiesVec) {
+                proxies.emplace(proxyData, 0);
+            }
+        }
 
-		/* 5s 同步一次数据库 */
+        /* 5s 同步一次数据库 */
         int ms_count = g_clientConfig.interval_proxypool_sync * 10;
-		for (int i = 0; i < ms_count && !g_forceStop; ++i) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-		}
-	}
+        for (int i = 0; i < ms_count && !g_forceStop; ++i) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
 
     LogF("ProxyManager stopped");
 
     g_stop(StopMode::Force);
-	proxySvr->bg_thread_quit_ = true;
+    proxySvr->bg_thread_quit_ = true;
 }
 

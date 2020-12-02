@@ -20,17 +20,17 @@
 
 class ProxyManager {
 public:
-	ProxyManager();
-	~ProxyManager();
+    ProxyManager();
+    ~ProxyManager();
     bool getRandomProxy(ic::ProxyData& proxyData); 
 
 public:
     void start(MysqlDbPool* mysqlDbPool);
     void stop();
 
-	void errorProxy(const ic::ProxyData& proxyData);
-	void removeProxy(const ic::ProxyData& proxyData);
-	size_t getNumProxies() const { return proxies_.size(); }
+    void errorProxy(const ic::ProxyData& proxyData);
+    void removeProxy(const ic::ProxyData& proxyData);
+    size_t getNumProxies() const { return proxies_.size(); }
 
     bool isRunning() const { return !bg_thread_quit_; }
 
@@ -41,33 +41,33 @@ public:
     bool getAllProxiesFromDb(std::vector<ic::ProxyData>& proxiesData);
     bool getNumProxiesFromDb(int* num);
 
-	static void backgroundThread(ProxyManager* proxySvr);
+    static void backgroundThread(ProxyManager* proxySvr);
 
 private:
-	struct hash_function {
-		bool operator()(const ic::ProxyData& p1, const ic::ProxyData& p2) const {
-			if (p1.host < p2.host) {
-				return true;
-			}
-			else if (p1.host > p2.host) {
-				return false;
-			}
-			else {
-				if (p1.port < p2.port) {
-					return true;
-				}
-				else {
-					return false;
-				}
-			}
-		}
-	};
+    struct hash_function {
+        bool operator()(const ic::ProxyData& p1, const ic::ProxyData& p2) const {
+            if (p1.host < p2.host) {
+                return true;
+            }
+            else if (p1.host > p2.host) {
+                return false;
+            }
+            else {
+                if (p1.port < p2.port) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+    };
 
 public:
     /* <代理IP信息，失败次数> */
-	std::map<ic::ProxyData, int, hash_function> proxies_;
+    std::map<ic::ProxyData, int, hash_function> proxies_;
 
-	std::mutex mutex_;
-	bool bg_thread_quit_ = true;
+    std::mutex mutex_;
+    bool bg_thread_quit_ = true;
     MysqlDbPool* mysql_db_pool_ = nullptr;
 };

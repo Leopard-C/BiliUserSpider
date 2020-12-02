@@ -11,58 +11,58 @@
 
 /* 获取client config */
 int api_get_client_config(const std::string& server, ClientConfig* clientConfig, std::string* errMsg) {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ret = http_get(server + "/config/client/get", &root, errMsg);
         if (ret != NO_ERROR) {
             break;
         }
 
-		if (checkNull(root, "data")) {
+        if (checkNull(root, "data")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data";
-			break;
-		}
+            break;
+        }
 
         if (!clientConfig->parseFromJson(root["data"])) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "parse root[data] failed";
-			break;
+            break;
         }
 
-		ret = NO_ERROR;
-	} while (false);
+        ret = NO_ERROR;
+    } while (false);
 
-	return ret;
+    return ret;
 }
 
 
 /* 获取database config */
 int api_get_database_config(const std::string& server, DatabaseConfig* dbConfig, std::string* errMsg) {
-	int ret = GENERAL_ERROR;
-	do {
+    int ret = GENERAL_ERROR;
+    do {
         Json::Value root;
         ret = http_get(server + "/config/database/get", &root, errMsg);
         if (ret != NO_ERROR) {
             break;
         }
 
-		if (checkNull(root, "data")) {
+        if (checkNull(root, "data")) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "Missing key:data";
-			break;
-		}
+            break;
+        }
 
         if (dbConfig->parseFromJson(root["data"])) {
             ret = INTERNAL_SERVER_ERROR;
             *errMsg = "parse root[data] failed";
-			break;
+            break;
         }
 
-		ret = NO_ERROR;
-	} while (false);
+        ret = NO_ERROR;
+    } while (false);
 
-	return ret;
+    return ret;
 }
 

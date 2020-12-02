@@ -3,7 +3,7 @@
 
 
 int http_get(ic::Url url, Json::Value* root, std::string* errMsg) {
-	int ret = GENERAL_ERROR;
+    int ret = GENERAL_ERROR;
     do {
         url.setParam("token", g_clientToken);
         ic::Request request(url.toString());
