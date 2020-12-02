@@ -1,0 +1,38 @@
+{
+   "client" : {
+      "bili_api_type" : 1,
+      "interval_proxypool_sync" : 10,
+      "main_task_step_times" : 2,
+      "mid_max_error_times" : 10,
+      "proxy_max_error_times" : 20,
+      "proxy_sleeptime_map" : [
+         [ 10, 60 ],
+         [ 20, 30 ],
+         [ 30, 20 ]
+      ],
+      "sub_task_step" : 5,
+      "timeout" : 2200
+   },
+   "database" : {
+      "host" : "",
+      "name" : "",
+      "password" : "",
+      "port" : 3306,
+      "user" : "root"
+   },
+   "proxy" : {
+      "interval_query" : 10,
+      "order_id" : "",
+      "user_id" : ""
+   },
+   "server" : {
+      "admin_password" : "",
+      "client_live_heartbeat" : 600,
+      "client_token" : "bhKyhZpFAp3T",
+      "interval_detect_client_live" : 10,
+      "ip" : [ "127.0.0.1", "10.133.xxx.xxx" ],
+      "main_task_timeout" : 1200,
+      "port" : 10033,
+      "thread_pool_size" : 48
+   }
+}

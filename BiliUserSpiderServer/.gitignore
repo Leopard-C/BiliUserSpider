@@ -1,0 +1,4 @@
+build
+config/passwords.json
+logs
+.xmake
