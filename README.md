@@ -4,7 +4,7 @@
 
 bilibili御坂网络计划： https://misaka.sisters.top
 
-（备用网址：https://misakasisters.bilibiliq.com）
+（备用网址：https://misakasisters.bilibiliq.com ）
 
 ## 1. 环境
 
