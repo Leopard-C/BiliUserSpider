@@ -4,15 +4,25 @@
 
 bilibili御坂网络计划： https://misaka.sisters.top
 
-（备用网址：https://misakasisters.bilibiliq.com ）
+>  备用网址：https://misakasisters.bilibiliq.com
+
+> 只保留与此相关的数据，其余数据已删除
 
 ## 1. 环境
+
+开发环境
 
 |          | 服务器          | 客户端          | 管理程序      |
 | -------- | --------------- | --------------- | ------------- |
 | 语言     | C++11           | C++11           | C++11         |
 | 开发环境 | Linux/vim/xmake | VS2017          | VS2017+Qt5.12 |
 | 运行环境 | Linux           | Windows / Linux | Windows       |
+
+其他环境
+
+| 配置项 | 值           |
+| ------ | ------------ |
+| 数据库 | MySQL-8.0.20 |
 
 >客户端是在Windows下开发的，但是代码可以直接放到到Linux上编译运行。
 >
@@ -127,15 +137,15 @@ bilibili御坂网络计划： https://misaka.sisters.top
 
 + 非空的用户信息，每200万个用户一个数据表
 
-  ![image-20201117213520660](assets/README/image-20201117213520660.png)
+  ![user_info_table](assets/README/user_info_table.png)
 
 + 空的用户信息，每200万个用户一个数据表，只记录用户ID
 
-  ![image-20201117213659950](assets/README/image-20201117213659950.png)
+  ![user_info_none_table](assets/README/user_info_none_table.png)
 
 + 代理IP数据表
 
-  ![image-20201117213804370](assets/README/image-20201117213804370.png)
+  ![proxy_table](assets/README/proxy_table.png)
 
 ## 4. 爬虫情况
 
@@ -189,11 +199,11 @@ bilibili御坂网络计划： https://misaka.sisters.top
 
 > 我认为提高代理IP使用率的方法，是将爬虫的超时时间设置大一点，允许的错误次数设置多一点，然后就是疯狂开进程(+线程)，比如开几十个上百个进程，上千个线程。这样可以榨干代理IP。（只是个人见解）
 
-![2020-12-02_15-18-44](assets/README/2020-12-02_15-18-44.jpg)
+![admin](assets/README/admin.jpg)
 
 
 
-![2020-12-02_14-46-41](assets/README/2020-12-02_14-46-41.jpg)
+![spider](assets/README/spider.jpg)
 
 ## 5. 感受
 
@@ -207,5 +217,7 @@ C++写的爬虫可以很强大。
 
 ## END
 
-<leopard.c@outlook.com>
+Github: [Leopard-C/BiliUserSpider](https://github.com/Leopard-C/BiliUserSpider)
+
+Email: <leopard.c@outlook.com>
 
