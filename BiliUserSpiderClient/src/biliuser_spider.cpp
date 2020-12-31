@@ -171,7 +171,7 @@ bool BiliUserSpider::init() {
 
     /* Mysql数据库连接池 */
     mysql_db_pool_ = new MysqlDbPool(g_dbConfig.host, g_dbConfig.port, g_dbConfig.user,
-        g_dbConfig.password, "bili_user", 3);
+        g_dbConfig.password, g_dbConfig.name, 3);
     if (mysql_db_pool_->bad()) {
         LError("Create proxy db connector pool failed");
         return false;

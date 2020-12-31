@@ -348,7 +348,7 @@ int EpollSocket::handle_event(epoll_event &e) {
             ret = this->handle_writeable_event(_epollfd, e, *_watcher);
         }
     } else {
-        LInfo("unkonw events :{}", e.events);
+        LInfo("unkonw events :{}", (unsigned int)e.events);
         ret = -1;
     }
     return ret;
